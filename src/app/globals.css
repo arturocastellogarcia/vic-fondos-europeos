@@ -23,6 +23,7 @@ body {
   color: var(--text);
   font-size: 14px;
   line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
 }
 a { color: inherit; text-decoration: none; }
 
@@ -37,7 +38,9 @@ a { color: inherit; text-decoration: none; }
 .site-header .subtitle { font-size: 13px; opacity: 0.85; }
 .site-header .meta { text-align: right; font-size: 12px; opacity: 0.8; }
 .site-header .meta strong { display: block; font-size: 14px; opacity: 1; margin-bottom: 2px; }
-.nav { max-width: 1400px; margin: 0 auto; padding: 0 40px; display: flex; gap: 0; }
+.nav { max-width: 1400px; margin: 0 auto; padding: 0 40px; display: flex; gap: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
+.nav a { white-space: nowrap; }
 .nav a {
   display: block; padding: 12px 20px; font-size: 13px; font-weight: 500;
   color: rgba(255, 255, 255, 0.75); border-bottom: 3px solid transparent; transition: all .15s;
@@ -181,4 +184,89 @@ footer { text-align: center; font-size: 11px; color: var(--text-muted); margin-t
 @keyframes typing {
   0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
   30% { opacity: 1; transform: translateY(-3px); }
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+/* Tablet: ≤ 900px */
+@media (max-width: 900px) {
+  .site-header-top { padding: 20px 24px 10px; gap: 12px; }
+  .site-header h1 { font-size: 19px; }
+  .site-header .subtitle { font-size: 12px; }
+  .site-header .meta { text-align: left; }
+  .nav { padding: 0 16px; }
+  .nav a { padding: 10px 14px; font-size: 12.5px; }
+  main { padding: 18px 20px 50px; }
+
+  .toolbar { padding: 10px 12px; gap: 10px; }
+  .search { min-width: 100%; order: 10; }
+  .toolbar label { font-size: 11px; }
+  .pill { padding: 5px 10px; font-size: 11.5px; }
+
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .kpi { padding: 14px 16px; }
+  .kpi .value { font-size: 22px; }
+  .kpi .label { font-size: 10px; }
+  .kpi .sub { font-size: 11px; }
+
+  .card { padding: 14px 16px; }
+  .card h3 { font-size: 13px; }
+  .card .card-sub { font-size: 11px; margin-bottom: 10px; }
+  .chart-wrap { height: 240px; }
+  .chart-wrap.tall { height: 320px; }
+  .chart-wrap.xtall { height: 360px; }
+
+  .section-title { font-size: 15px; }
+}
+
+/* Mobile: ≤ 600px */
+@media (max-width: 600px) {
+  body { font-size: 13px; }
+  .site-header-top { padding: 16px 16px 8px; }
+  .site-header h1 { font-size: 16px; line-height: 1.3; }
+  .site-header .subtitle { font-size: 11.5px; }
+  .site-header .meta { font-size: 11px; }
+  .site-header .meta strong { font-size: 12px; }
+  .nav a { padding: 9px 12px; font-size: 12px; }
+
+  main { padding: 14px 12px 40px; }
+
+  .toolbar { padding: 10px; border-radius: 8px; }
+  .toolbar .group { gap: 4px; }
+
+  .kpi-grid { grid-template-columns: 1fr; gap: 8px; margin-bottom: 14px; }
+  .kpi { padding: 12px 14px; border-radius: 10px; }
+  .kpi .value { font-size: 20px; }
+  .kpi::before { width: 3px; }
+
+  .grid-2, .grid-2-even { gap: 10px; margin-bottom: 10px; }
+  .card { padding: 12px 14px; border-radius: 10px; }
+  .chart-wrap { height: 220px; }
+  .chart-wrap.tall { height: 280px; }
+  .chart-wrap.xtall { height: 320px; }
+
+  /* Table: compacta y scrolleable */
+  table { font-size: 12px; }
+  thead th { padding: 8px 8px; font-size: 10px; }
+  tbody td { padding: 8px 8px; }
+  .proyecto-nombre { max-width: 200px; font-size: 12px; }
+  .servicio-tag { font-size: 10px; padding: 1px 6px; }
+  .estado-badge { font-size: 10px; padding: 2px 7px; }
+
+  /* Chat */
+  .msg-avatar { width: 28px; height: 28px; font-size: 11px; border-radius: 6px; }
+  .msg-content { font-size: 13px; padding: 10px 12px; }
+  .suggestion { font-size: 12px; padding: 7px 10px; }
+  .chat-input { font-size: 13px; padding: 8px 10px; }
+  .chat-send { padding: 0 14px; font-size: 12px; }
+
+  .section-title { font-size: 14px; margin: 18px 0 10px; }
+  footer { font-size: 10px; }
+}
+
+/* Small mobile: ≤ 380px */
+@media (max-width: 380px) {
+  .site-header h1 { font-size: 15px; }
+  .nav a { padding: 8px 10px; font-size: 11.5px; }
+  .kpi .value { font-size: 18px; }
 }

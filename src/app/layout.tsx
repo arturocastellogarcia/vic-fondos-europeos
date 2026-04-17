@@ -7,6 +7,12 @@ export const metadata: Metadata = {
   description: "Dashboard de seguimiento de proyectos europeos del Área de Agenda Digital e Innovación del Ajuntament de València",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
