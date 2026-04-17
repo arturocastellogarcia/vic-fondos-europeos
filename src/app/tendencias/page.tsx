@@ -1,6 +1,14 @@
 "use client";
 import { useMemo, useState } from "react";
-import { PROYECTOS, fmtEur, fmtEurShort } from "@/lib/projects";
+import {
+  PROYECTOS,
+  SECTOR_ALINEAMIENTO,
+  SECTOR_COLORS,
+  GAPS_ESTRATEGICOS_UE,
+  type Sector,
+  fmtEur,
+  fmtEurShort,
+} from "@/lib/projects";
 
 type Horizonte = "2027" | "2030" | "2034";
 type Escenario = "optimista" | "continuidad" | "restrictivo";
@@ -65,6 +73,22 @@ export default function TendenciasPage() {
       pendientes: pendientes.length, pendienteAyuda,
       horizonCount, federAyuda, ldtCount: ldt.length, ldtAyuda,
     };
+  }, []);
+
+  // ---------- Sectores estratégicos ----------
+  const sectores = useMemo(() => {
+    const actuales = PROYECTOS.filter((p) => p.legislatura === "actual");
+    const bySector: Record<string, { count: number; ayuda: number; coste: number; proyectos: string[] }> = {};
+    actuales.forEach((p) => {
+      if (!bySector[p.sector]) bySector[p.sector] = { count: 0, ayuda: 0, coste: 0, proyectos: [] };
+      bySector[p.sector].count++;
+      bySector[p.sector].ayuda += p.ayuda;
+      bySector[p.sector].coste += p.costeTotal;
+      bySector[p.sector].proyectos.push(p.titulo.split("·")[0].trim());
+    });
+    return Object.entries(bySector)
+      .map(([sector, d]) => ({ sector: sector as Sector, ...d, ...SECTOR_ALINEAMIENTO[sector as Sector] }))
+      .sort((a, b) => b.ayuda - a.ayuda);
   }, []);
 
   // ---------- Escenarios ----------
@@ -179,6 +203,77 @@ export default function TendenciasPage() {
             <div><strong>Previsible emergencia de:</strong> FP10, CEF Digital 2, Innovation Fund ampliado, EUI nueva ola</div>
             <div><strong>Riesgo:</strong> consolidación de programas · menos convocatorias pero mayores tickets</div>
           </div>
+        </div>
+      </div>
+
+      {/* ------ SECTORES ESTRATÉGICOS ------ */}
+      <h3 style={{ fontSize: 15, marginBottom: 6 }}>Sectores estratégicos: posicionamiento y gaps</h3>
+      <p style={{ fontSize: 13, color: "var(--text-muted)", marginBottom: 14, maxWidth: 850 }}>
+        Radiografía sectorial cruzada con el alineamiento del próximo MFF. Muestra dónde tenemos masa crítica, dónde el envelope UE crece,
+        y qué sectores estratégicos emergentes aún no figuran en la cartera.
+      </p>
+
+      <div className="card" style={{ padding: 0, overflowX: "auto", marginBottom: 18 }}>
+        <table>
+          <thead>
+            <tr>
+              <th>Sector</th>
+              <th className="num">Proyectos</th>
+              <th className="num">Ayuda</th>
+              <th style={{ whiteSpace: "nowrap" }}>Alineamiento UE</th>
+              <th>Programas UE relevantes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sectores.map((s) => {
+              const nivelClass = s.nivel === "Alto" ? "alin-alto" : s.nivel === "Medio" ? "alin-medio" : s.nivel === "Emergente" ? "alin-emergente" : "alin-gap";
+              return (
+                <tr key={s.sector}>
+                  <td>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ display: "inline-block", width: 10, height: 10, borderRadius: 3, background: SECTOR_COLORS[s.sector] }}></span>
+                      <strong style={{ fontSize: 13 }}>{s.sector}</strong>
+                    </div>
+                    <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 3, marginLeft: 18, lineHeight: 1.4 }}>
+                      {s.proyectos.slice(0, 3).join(" · ")}{s.proyectos.length > 3 ? ` · +${s.proyectos.length - 3}` : ""}
+                    </div>
+                  </td>
+                  <td className="num">{s.count}</td>
+                  <td className="num" style={{ fontWeight: 600, color: "var(--primary)" }}>{fmtEurShort(s.ayuda)}</td>
+                  <td><span className={`alin-badge ${nivelClass}`}>{s.nivel}</span></td>
+                  <td style={{ fontSize: 12, color: "var(--text-muted)", maxWidth: 280 }}>{s.programasUE}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="grid-2-even" style={{ marginBottom: 28 }}>
+        <div className="card" style={{ borderLeft: "4px solid var(--accent)" }}>
+          <h3 style={{ color: "var(--accent)" }}>Fortalezas sectoriales</h3>
+          <ul style={{ margin: "10px 0 0 18px", padding: 0, fontSize: 13, lineHeight: 1.7 }}>
+            {sectores.slice(0, 3).map((s) => (
+              <li key={s.sector} style={{ marginBottom: 8 }}>
+                <strong>{s.sector}</strong> ({fmtEurShort(s.ayuda)} en {s.count} proyectos) — {s.razon}
+              </li>
+            ))}
+            <li>
+              <strong>Cluster Gemelos Digitales</strong> con 7 proyectos activos es una señal de posicionamiento único entre
+              ciudades españolas de cara a CEF Digital 2 y posibles AI Factories.
+            </li>
+          </ul>
+        </div>
+
+        <div className="card" style={{ borderLeft: "4px solid var(--warning)" }}>
+          <h3 style={{ color: "var(--warning)" }}>Gaps estratégicos UE sin presencia</h3>
+          <ul style={{ margin: "10px 0 0 18px", padding: 0, fontSize: 13, lineHeight: 1.7 }}>
+            {GAPS_ESTRATEGICOS_UE.map((g) => (
+              <li key={g.titulo} style={{ marginBottom: 10 }}>
+                <strong>{g.titulo}</strong> — {g.contexto} <em style={{ color: "var(--text-muted)" }}>{g.oportunidad}</em>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 

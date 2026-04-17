@@ -207,6 +207,15 @@ footer { text-align: center; font-size: 11px; color: var(--text-muted); margin-t
 }
 .trend-meta strong { color: var(--text); font-weight: 600; }
 
+.alin-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 10.5px;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap;
+}
+.alin-alto { background: #d1fae5; color: #065f46; }
+.alin-medio { background: #dbeafe; color: #1e40af; }
+.alin-emergente { background: #fef3c7; color: #92400e; }
+.alin-gap { background: #fee2e2; color: #991b1b; }
+
 @media (max-width: 900px) {
   .grid-3 { grid-template-columns: 1fr !important; }
 }

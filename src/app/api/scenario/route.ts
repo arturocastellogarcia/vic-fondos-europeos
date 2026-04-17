@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { PROYECTOS } from "@/lib/projects";
+import { PROYECTOS, SECTOR_ALINEAMIENTO, GAPS_ESTRATEGICOS_UE, type Sector } from "@/lib/projects";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -64,6 +64,7 @@ Reglas:
 function buildPortfolio(): string {
   const actuales = PROYECTOS.filter((p) => p.legislatura === "actual");
   const totalAyuda = actuales.reduce((s, p) => s + p.ayuda, 0);
+
   const byProg: Record<string, { count: number; ayuda: number; proyectos: string[] }> = {};
   actuales.forEach((p) => {
     if (!byProg[p.programa]) byProg[p.programa] = { count: 0, ayuda: 0, proyectos: [] };
@@ -71,15 +72,41 @@ function buildPortfolio(): string {
     byProg[p.programa].ayuda += p.ayuda;
     byProg[p.programa].proyectos.push(p.titulo.split("·")[0].trim());
   });
-  const bloques = Object.entries(byProg)
+  const bloquesProg = Object.entries(byProg)
     .sort((a, b) => b[1].ayuda - a[1].ayuda)
-    .map(([prog, d]) => `- ${prog}: ${d.count} proyecto(s), ${d.ayuda.toLocaleString("es-ES")}€ ayuda · ${d.proyectos.slice(0, 5).join(", ")}${d.proyectos.length > 5 ? "…" : ""}`)
+    .map(([prog, d]) => `- ${prog}: ${d.count} proyecto(s), ${d.ayuda.toLocaleString("es-ES")}€ · ${d.proyectos.slice(0, 4).join(", ")}${d.proyectos.length > 4 ? "…" : ""}`)
     .join("\n");
+
+  const bySector: Record<string, { count: number; ayuda: number; proyectos: string[] }> = {};
+  actuales.forEach((p) => {
+    if (!bySector[p.sector]) bySector[p.sector] = { count: 0, ayuda: 0, proyectos: [] };
+    bySector[p.sector].count++;
+    bySector[p.sector].ayuda += p.ayuda;
+    bySector[p.sector].proyectos.push(p.titulo.split("·")[0].trim());
+  });
+  const bloquesSector = Object.entries(bySector)
+    .sort((a, b) => b[1].ayuda - a[1].ayuda)
+    .map(([sec, d]) => {
+      const alin = SECTOR_ALINEAMIENTO[sec as Sector];
+      return `- ${sec} [alineamiento UE: ${alin?.nivel}]: ${d.count} proyecto(s), ${d.ayuda.toLocaleString("es-ES")}€ · programas: ${alin?.programasUE} · proyectos: ${d.proyectos.slice(0, 3).join(", ")}${d.proyectos.length > 3 ? "…" : ""}`;
+    })
+    .join("\n");
+
+  const gaps = GAPS_ESTRATEGICOS_UE
+    .map((g) => `- ${g.titulo}: ${g.contexto} Oportunidad potencial: ${g.oportunidad}`)
+    .join("\n");
+
   return `CARTERA ACTUAL VIC/OCI/SEPUE/SCT/Innovación/Turismo (legislatura 2023-2027):
 Ayuda total captada: ${totalAyuda.toLocaleString("es-ES")}€ en ${actuales.length} proyectos.
 
-Distribución por programa europeo:
-${bloques}`;
+Distribución por PROGRAMA europeo:
+${bloquesProg}
+
+Distribución por SECTOR ESTRATÉGICO (cruzado con alineamiento MFF próximo):
+${bloquesSector}
+
+GAPS estratégicos UE sin presencia en cartera (a considerar para pipeline futuro):
+${gaps}`;
 }
 
 export async function POST(req: Request) {
