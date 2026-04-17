@@ -1,22 +1,34 @@
 "use client";
 import { useMemo } from "react";
-import { Bar, Doughnut, Scatter, Line } from "react-chartjs-2";
+import { Bar, Doughnut, Scatter, Chart } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
-  ArcElement,
-  PointElement,
+  BarController,
   LineElement,
+  LineController,
+  PointElement,
+  ArcElement,
   Tooltip,
   Legend,
-  TimeScale,
+  Filler,
 } from "chart.js";
 import { PROYECTOS, SERVICIO_COLORS, PROGRAMA_COLORS, fmtEur, fmtEurShort } from "@/lib/projects";
 
 ChartJS.register(
-  CategoryScale, LinearScale, BarElement, ArcElement, PointElement, LineElement, Tooltip, Legend, TimeScale
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  BarController,
+  LineElement,
+  LineController,
+  PointElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Filler
 );
 
 function parseFecha(s: string): Date | null {
@@ -177,7 +189,7 @@ export default function GraficosPage() {
           <h3>Línea temporal de concesiones</h3>
           <div className="card-sub">Ayuda concedida mensual y acumulado · basado en proyectos con fecha de concesión registrada</div>
           <div className="chart-wrap xtall">
-            <Bar data={timeline as never} options={{
+            <Chart type="bar" data={timeline as never} options={{
               responsive: true, maintainAspectRatio: false,
               plugins: {
                 legend: { position: "top", labels: { font: { size: 12 }, usePointStyle: true } },
