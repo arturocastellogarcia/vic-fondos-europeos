@@ -156,14 +156,14 @@ export default function Dashboard() {
 
       <div className="kpi-grid">
         <div className="kpi primary">
-          <div className="label">Ayuda europea captada</div>
+          <div className="label">Ayuda captada</div>
           <div className="value">{fmtEur(kpis.totalAyuda)}</div>
-          <div className="sub">{kpis.pct.toFixed(0)}% del coste total · fondos europeos</div>
+          <div className="sub">{kpis.pct.toFixed(0)}% del presupuesto total · fondos europeos, nacionales y privados</div>
         </div>
         <div className="kpi">
-          <div className="label">Coste total de proyectos</div>
+          <div className="label">Presupuesto total de proyectos</div>
           <div className="value">{fmtEur(kpis.totalCoste)}</div>
-          <div className="sub">IVA incluido · presupuesto completo</div>
+          <div className="sub">Ayuda captada + aportación municipal</div>
         </div>
         <div className="kpi warning">
           <div className="label">Aportación del Ayuntamiento</div>
@@ -180,7 +180,7 @@ export default function Dashboard() {
       <div className="grid-2">
         <div className="card">
           <h3>Ayuda por servicio responsable</h3>
-          <div className="card-sub">Importe de ayuda europea captada (€) agrupado por servicio gestor</div>
+          <div className="card-sub">Importe de ayuda captada (€) agrupado por servicio gestor</div>
           <div className="chart-wrap tall">
             <Bar data={servicioData} options={{
               indexAxis: "y",
@@ -211,7 +211,7 @@ export default function Dashboard() {
       <div className="grid-1">
         <div className="card">
           <h3>Top proyectos por ayuda captada</h3>
-          <div className="card-sub">Los 12 proyectos con mayor aportación europea</div>
+          <div className="card-sub">Los 12 proyectos con mayor ayuda captada</div>
           <div className="chart-wrap tall">
             <Bar data={topData} options={{
               indexAxis: "y",
@@ -235,7 +235,7 @@ export default function Dashboard() {
               <th onClick={() => toggleSort("servicio")} className={sortKey === "servicio" ? "sorted" : ""}>Servicio <span className="sort-ind">{sortInd("servicio")}</span></th>
               <th onClick={() => toggleSort("expediente")} className={sortKey === "expediente" ? "sorted" : ""}>Expediente <span className="sort-ind">{sortInd("expediente")}</span></th>
               <th onClick={() => toggleSort("fechaConc")} className={sortKey === "fechaConc" ? "sorted" : ""}>Fecha concesión <span className="sort-ind">{sortInd("fechaConc")}</span></th>
-              <th onClick={() => toggleSort("costeTotal")} className={`num ${sortKey === "costeTotal" ? "sorted" : ""}`}>Coste total <span className="sort-ind">{sortInd("costeTotal")}</span></th>
+              <th onClick={() => toggleSort("costeTotal")} className={`num ${sortKey === "costeTotal" ? "sorted" : ""}`}>Presupuesto <span className="sort-ind">{sortInd("costeTotal")}</span></th>
               <th onClick={() => toggleSort("subvencionable")} className={`num ${sortKey === "subvencionable" ? "sorted" : ""}`}>Subv. aprob. <span className="sort-ind">{sortInd("subvencionable")}</span></th>
               <th onClick={() => toggleSort("ayuda")} className={`num ${sortKey === "ayuda" ? "sorted" : ""}`}>Ayuda <span className="sort-ind">{sortInd("ayuda")}</span></th>
               <th onClick={() => toggleSort("ayto")} className={`num ${sortKey === "ayto" ? "sorted" : ""}`}>Aporta Ayto <span className="sort-ind">{sortInd("ayto")}</span></th>
